@@ -11,4 +11,4 @@
 
 # particular repository ignores:
 
-!gitstart.ps1
+!ghs.ps1
