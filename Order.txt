@@ -1,0 +1,30 @@
+git init
+
+git remote add origin git@git###.com:gabibdods/<repository>.git
+
+edit :  .gitattributes
+		.gitignore
+		README.md
+		License/
+		License/LICENSE.md
+		License/NOTICE.md
+
+git push --set-upstream origin main
+
+gitpush
+
+disable from the home page: Release
+							Packages
+							Deployments
+		
+enable in Settings General: Require contributors to sign off on web-based commits
+
+enable in Settings Pull Requests: Automatically delete head branches
+
+disable in Settings Default Branch: Wikis
+									Issues
+									Sponsorships
+									Discussions
+									Projects
+							
+create branch protection rule : Lock branch
