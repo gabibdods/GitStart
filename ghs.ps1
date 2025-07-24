@@ -39,8 +39,8 @@ gh api `
 	-f has_projects=false `
 	-f has_discussions=false
 
-Write-Host "create in Branch -> Branch Protection Rule: Lock branch" -ForegroundColor Black -BackgroundColor DarkYellow
+Write-Host "enable in Settings -> General: Require contributors to sign off on web-based commits" -ForegroundColor Black -BackgroundColor DarkYellow
 
 Write-Host "disable in Home Page: Release, Packages, Deployments" -ForegroundColor Black -BackgroundColor DarkBlue
 
-Write-Host "enable in Settings -> General: Require contributors to sign off on web-based commits" -ForegroundColor Black -BackgroundColor DarkYellow
+Write-Host "create in Branch -> Branch Protection Rule: Require signed commits, Lock branch" -ForegroundColor Black -BackgroundColor DarkYellow
