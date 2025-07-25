@@ -10,6 +10,8 @@ git clone https://github.com/gabibdods/NewRepositoryTemplate
 
 Remove-Item -Path .\NewRepositoryTemplate\.git -Recurse -Force
 
+Remove-Item -Path .\NewRepositoryTemplate\Example.txt -Recurse -Force
+
 Move-Item -Path .\NewRepositoryTemplate\* -Destination .
 
 Remove-Item -Path .\NewRepositoryTemplate -Recurse -Force
