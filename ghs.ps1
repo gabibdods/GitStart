@@ -1,6 +1,18 @@
-$repository = Read-Host "Name"
-New-Item -Path "C:\Users\$env:UserName" -Name "_$repository" -ItemType "Directory"
+# Setting variables
+param(
+	[string]$owner = 'gabibdods',
+	[string]$repository = Read-Host "Name",
+	[string]$token = $env:GITHUB_PAT,
+	[string]$branch = 'main'
+)
+if (-not $token) {
+	Write-Error "GITHUB_PAT error!"
+    exit 1
+}
 
+
+# Using template
+New-Item -Path "C:\Users\$env:UserName" -Name "_$repository" -ItemType "Directory"
 
 Set-Location -Path "C:\Users\$env:UserName\_$repository"
 
@@ -17,32 +29,85 @@ Move-Item -Path .\NewRepositoryTemplate\* -Destination .
 Remove-Item -Path .\NewRepositoryTemplate -Recurse -Force
 
 
+# Creating the repository
 git add .
-
-git status
 
 git commit -m "created license and rights"
 
-gh repo create $repository --public --source=. --remote=origin --push
+$create = @{
+  name = $repository
+  description = ''
+  private = $false
+  auto_init = $false
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+	-Uri "https://api.github.com/user/repos" `
+	-Method Post `
+	-Headers $headers `
+	-Body $create
+	
+git remote add origin "https://github.com/$owner/$repository.git"
 
 git push --set-upstream origin main
 
 
-Write-Host "enable in Settings -> Pull Requests: Automatically delete head branches" -ForegroundColor Black -BackgroundColor DarkYellow
-gh api `
-	-X PATCH /repos/gabibdods/$repository `
-	-f delete_branch_on_merge=true
+# Configuring security
 
-Write-Host "disable in Settings -> Default Branch: Wikis, Issues, Sponsorships, Discussions, Projects" -ForegroundColor Black -BackgroundColor Green
-gh api `
-	-X PATCH /repos/gabibdods/$repository `
-	-f has_wiki=false `
-	-f has_issues=false `
-	-f has_projects=false `
-	-f has_discussions=false
+$headers = @{
+    Authorization = "Bearer $Token"
+    Accept = "application/vnd.github+json"
+}
+Write-Host "Hide Wikis, Issues, Sponsorships, Archiving, Discussions and Projects from Settings -> Features" -ForegroundColor Black -BackgroundColor DarkYellow
+
+Write-Host "Enable Automatically delete head branches from Settings -> Pull Requests" -ForegroundColor Black -BackgroundColor Green
+
+$hide = @{
+	has_wiki = $false
+	has_issues = $false
+	has_discussions = $false
+	has_projects = $false
+	allow_forking = $false
+	delete_branch_on_merge = $true
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+	-Uri "https://api.github.com/repos/$owner/$repository" `
+	-Method Patch `
+	-Headers $headers `
+	-Body $hide
+
+$unarchive = @{ archived = $false } | ConvertTo-Json
+
+Invoke-RestMethod `
+	-Uri "https://api.github.com/repos/$owner/$repository" `
+	-Method Patch `
+	-Headers $headers `
+	-Body $unarchive
 
 Write-Host "enable in Settings -> General: Require contributors to sign off on web-based commits" -ForegroundColor Black -BackgroundColor DarkYellow
 
-Write-Host "disable in Home Page: Release, Packages, Deployments" -ForegroundColor Black -BackgroundColor DarkBlue
+$security = @{
+    web_commit_signoff_required = $true
+} | ConvertTo-Json
 
-Write-Host "create in Branch -> Branch Protection Rule: Require signed commits, Lock branch" -ForegroundColor Black -BackgroundColor DarkYellow
+Invoke-RestMethod `
+	-Uri "https://api.github.com/repos/$owner/$repository" `
+	-Method Patch `
+	-Headers $headers `
+	-Body $security
+
+Write-Host "create in Branch -> Branch Protection Rule: for main, Require signed commits, Lock branch; then save" -ForegroundColor Black -BackgroundColor DarkBlue
+
+$protectionBody = @{
+	required_signatures = @{ enabled = $true }
+	lock_branch = $true
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+  -Uri    "https://api.github.com/repos/$Owner/$Repo/branches/$Branch/protection" `
+  -Method Put `
+  -Headers $Headers `
+  -Body    $protectionBody
+
+Write-Host "disable in Home Page: Release, Packages, Deployments" -ForegroundColor Black -BackgroundColor DarkYellow
