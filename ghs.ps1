@@ -66,7 +66,7 @@ git push --set-upstream origin main
 
 
 # Configuring security
-Write-Host "Hide Wikis, Issues, Sponsorships, Archiving, Discussions and Projects from Features" -ForegroundColor Black -BackgroundColor DarkYellow
+Write-Host "Hide Wikis, Issues, Sponsorships, !Preserving, Discussions and Projects from Features" -ForegroundColor Black -BackgroundColor DarkYellow
 
 Write-Host "Enable Automatically delete head branches from Pull Requests" -ForegroundColor Black -BackgroundColor Green
 
@@ -117,4 +117,4 @@ Invoke-RestMethod `
   -Method Post `
   -Headers $headers `
 
-Write-Host "disable in Home Page: Release, Packages, Deployments" -ForegroundColor Black -BackgroundColor DarkYellow
+Write-Host "disable in Home Page: !Release, !Packages, !Deployments" -ForegroundColor Black -BackgroundColor DarkYellow
