@@ -12,3 +12,4 @@
 # particular repository ignores:
 
 !ghs.ps1
+!.gitlab-ci.yml
