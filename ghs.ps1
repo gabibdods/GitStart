@@ -21,9 +21,9 @@ $headers = @{
 
 
 # Using template
-New-Item -Path "C:\Users\$env:UserName" -Name "_$repository" -ItemType "Directory"
+New-Item -Path "C:\Users\$env:UserName\Documents" -Name "$repository" -ItemType "Directory"
 
-Set-Location -Path "C:\Users\$env:UserName\_$repository"
+Set-Location -Path "C:\Users\$env:UserName\Documents\$repository"
 
 git init
 
@@ -31,13 +31,11 @@ git clone https://github.com/gabibdods/NewRepositoryTemplate
 
 Remove-Item -Path .\NewRepositoryTemplate\.git -Recurse -Force
 
-Remove-Item -Path .\NewRepositoryTemplate\Example.txt -Recurse -Force
+Remove-Item -Path .\NewRepositoryTemplate\PTRS.txt -Recurse -Force
 
 Move-Item -Path .\NewRepositoryTemplate\* -Destination .
 
 Remove-Item -Path .\NewRepositoryTemplate -Recurse -Force
-
-git config --global commit.gpgsign true
 
 
 
@@ -59,9 +57,17 @@ Invoke-RestMethod `
 	-Headers $headers `
 	-Body $create
 	
-git remote add origin "https://github.com/$owner/$repository.git"
+git remote add origin "git@github.com:$owner/$repository.git"
+	
+git remote add gitlab "git@gitlab.com:$owner/$repository.git"
+	
+git remote add bitbucket "git@bitbucket.org:$owner/$repository.git"
 
 git push --set-upstream origin main
+
+git push gitlab main
+
+git push bitbucket main
 
 
 
