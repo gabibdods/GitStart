@@ -27,7 +27,7 @@ Set-Location -Path "C:\Users\$env:UserName\Documents\$repository"
 
 git init
 
-git clone https://github.com/gabibdods/NewRepositoryTemplate
+git clone https://github.com/gabibdods/NewRepo
 
 Remove-Item -Path .\NewRepositoryTemplate\.git -Recurse -Force
 
